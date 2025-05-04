@@ -1,0 +1,26 @@
+#This file is a trick to re-execute certain jobs when review is submitted
+
+name: Rerun checks after review
+
+on:
+  pull_request_review:
+    types: [ submitted, dismissed ]
+
+jobs:
+  rerun_checks:
+
+    runs-on: ubuntu-latest
+
+    name: Rerun specified checks
+
+    permissions:
+      actions: write
+
+    if: github.event.review.state == 'approved'
+
+    steps:
+      - name: Rerun Checks
+        uses: shqear93/rerun-checks@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          check-names: 'Code review'
